@@ -1,0 +1,28 @@
+.header-blur {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    z-index: 20; /* Plus élevé que la scène 3D */
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: border-radius 0.3s ease;
+}
+
+/* Style lorsque le header est collé en haut */
+.header-blur.is-sticky {
+    border-radius: 0 0 1rem 1rem;
+}
+
+/* Navigation style enhancements */
+.header-blur .navigation-menu-container {
+    width: 100%;
+    max-width: 1200px;
+}
