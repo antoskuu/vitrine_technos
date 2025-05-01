@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Header from './Header'
-import Three from './Three'
+import Three from './pages/Three'
 
 function App() {
   const [count, setCount] = useState(0)

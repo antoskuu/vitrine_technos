@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
-import Scene from "./Scene";
+import Scene from "../Scene";
 
 export function Three() {
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -151,25 +151,7 @@ export function Three() {
               />
             </div>
           </div>
-          
-          {/* Navigation par points */}
-          <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-2">
-            {sectionStates.map((_, index) => (
-              <button
-                key={index}
-                className={`w-3 h-3 rounded-full ${
-                  currentSection === index ? "bg-white" : "bg-white/30"
-                }`}
-                onClick={() => {
-                  const section = document.querySelectorAll('section')[index];
-                  if (section) {
-                    section.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
-                aria-label={`Naviguer vers la section ${index + 1}`}
-              />
-            ))}
-          </div>
+      
           
           <Suspense
             fallback={

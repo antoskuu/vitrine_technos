@@ -44,9 +44,9 @@ function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/">
+                <Link to="/porsche">
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Accueil
+                    Rendu 3d
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
