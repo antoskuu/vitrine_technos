@@ -27,19 +27,23 @@ export function Three() {
         rotation: -Math.PI / 3,
         rotationX: 0,
         rotationY: 0,
-        position: { x: 5, y: 5, z: 0 },
+        position: { x: 0, y: 0, z: 0 },
         scale: 1,
         zoom: 0,
-    });
+        cameraPosition: [0, 5, 10] as [number, number, number],
+        cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+      });
 
     const sectionStates = [
         {
             rotation: 0,
             rotationX: 0,
             rotationY: 0,
-            position: { x: 2, y: 0, z: -1 },
+            position: { x: 0, y: 0, z: 0 },
             scale: 1.3,
             zoom: 0,
+            cameraPosition: [0, 5, 10] as [number, number, number],
+            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
         },
         {
             rotation: Math.PI / 3,
@@ -48,7 +52,9 @@ export function Three() {
             position: { x: -1, y: 0.5, z: -3 },
             scale: 0.8,
             zoom: 0,
-        },
+            cameraPosition: [0, 5, 10] as [number, number, number],
+            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+          },
         {
             rotation: -Math.PI / 2,
             rotationX: -Math.PI / 8,
@@ -56,6 +62,8 @@ export function Three() {
             position: { x: 3, y: 0.5, z: 0 },
             scale: 0.7,
             zoom: 0,
+            cameraPosition: [0, 5, 10] as [number, number, number],
+            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
         },
         {
             rotation: Math.PI,
@@ -64,6 +72,8 @@ export function Three() {
             position: { x: 0, y: 1, z: 0 },
             scale: 0.5,
             zoom: 0,
+            cameraPosition: [0, 5, 10] as [number, number, number],
+            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
         },
     ];
 
@@ -82,6 +92,16 @@ export function Three() {
             },
             scale: lerp(a.scale, b.scale, t),
             zoom: lerp(a.zoom, b.zoom, t),
+            cameraPosition: [
+                lerp(a.cameraPosition[0], b.cameraPosition[0], t),
+                lerp(a.cameraPosition[1], b.cameraPosition[1], t),
+                lerp(a.cameraPosition[2], b.cameraPosition[2], t),
+            ] as [number, number, number],
+            cameraRotation: [
+                lerp(a.cameraRotation[0], b.cameraRotation[0], t),
+                lerp(a.cameraRotation[1], b.cameraRotation[1], t),
+                lerp(a.cameraRotation[2], b.cameraRotation[2], t),
+            ] as [number, number, number],
         };
     }
 
