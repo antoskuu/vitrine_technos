@@ -9,6 +9,15 @@ gsap.registerPlugin(ScrollTrigger);
 export function Three() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
+    // Ajout d'un état pour suivre la section actuelle
+    const [currentSection, setCurrentSection] = useState(0);
+    // État pour les animations spécifiques à chaque section
+    const [sectionAnimations, setSectionAnimations] = useState({
+        rotation: 0,
+        position: { x: 0, y: 0, z: 0 },
+        scale: 1,
+        zoom: 0,
+    });
 
     // Ajout du scroll global
     useEffect(() => {
@@ -20,6 +29,19 @@ export function Three() {
         };
         window.addEventListener("scroll", handleScroll);
         handleScroll();
+        
+        // Création des triggers pour chaque section
+        const sections = document.querySelectorAll('section');
+        sections.forEach((section, index) => {
+            ScrollTrigger.create({
+                trigger: section,
+                start: "top center",
+                end: "bottom center",
+                onEnter: () => setCurrentSection(index),
+                onEnterBack: () => setCurrentSection(index),
+            });
+        });
+        
         return () => {
             window.removeEventListener("scroll", handleScroll);
             // Clean up any GSAP animations to prevent memory leaks
@@ -28,12 +50,57 @@ export function Three() {
         };
     }, []);
     
+    // Effet pour gérer les animations spécifiques à chaque section
+    useEffect(() => {
+        // Définir des animations différentes selon la section active
+        switch(currentSection) {
+            case 0: // Première section
+                setSectionAnimations({
+                    rotation: scrollProgress * Math.PI * 2,
+                    position: { x: 0, y: 0, z: 0 },
+                    scale: 1,
+                    zoom: 0
+                });
+                break;
+            case 1: // Deuxième section
+                setSectionAnimations({
+                    rotation: Math.PI / 2 + (scrollProgress * Math.PI / 2),
+                    position: { x: scrollProgress * 2, y: 0, z: 0 },
+                    scale: 1 + scrollProgress * 0.2,
+                    zoom: 0
+                });
+                break;
+            case 2: // Troisième section
+                setSectionAnimations({
+                    rotation: Math.PI + (scrollProgress * Math.PI / 4),
+                    position: { x: 0, y: scrollProgress * 1.5, z: 0 },
+                    scale: 1.2 - scrollProgress * 0.1,
+                    zoom: scrollProgress * 2
+                });
+                break;
+            case 3: // Quatrième section
+                setSectionAnimations({
+                    rotation: Math.PI * 1.5 + (scrollProgress * Math.PI / 2),
+                    position: { x: -scrollProgress * 2, y: 0, z: scrollProgress * 3 },
+                    scale: 1 + scrollProgress * 0.5,
+                    zoom: scrollProgress * 4
+                });
+                break;
+            default:
+                break;
+        }
+    }, [currentSection, scrollProgress]);
+    
     return (
         <main className="overflow-x-hidden">
           {/* Scène 3D en fixed */}
           <div className="fixed inset-0 z-10 pointer-events-none">
             <div className="h-full w-full">
-              <Scene scrollProgress={scrollProgress} />
+              <Scene 
+                scrollProgress={scrollProgress} 
+                animations={sectionAnimations}
+                currentSection={currentSection}
+              />
             </div>
           </div>
           <Suspense
@@ -51,7 +118,7 @@ export function Three() {
               <p className="text-center absolute top-[5%] mx-4 w-fit text-8xl font-bold">
                 Porsche
               </p>
-              <p className="text-center absolute bottom-[5%] mx-4 w-fit text-8xl font-bold">
+              <p className="text-center absolute  mx-4 w-fit text-8xl font-bold">
                 911
               </p>
             </section>
