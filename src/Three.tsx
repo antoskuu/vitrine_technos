@@ -3,22 +3,6 @@ import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
 import Scene from "./Scene";
 
-/*
-Explications des propriétés d'animation 3D :
-
-- rotation : Angle de rotation du modèle (autour d'un axe, souvent l'axe Y ou Z). Exprimé en radians.
-- rotationX : Angle de rotation du modèle autour de l'axe X. Exprimé en radians.
-- rotationY : Angle de rotation du modèle autour de l'axe Y. Exprimé en radians.
-- position.x, position.y, position.z : Position du modèle dans l'espace 3D (axes X, Y, Z).
-    - x : déplacement gauche/droite
-    - y : déplacement haut/bas
-    - z : déplacement avant/arrière (profondeur)
-- scale : Facteur d'échelle du modèle (1 = taille normale, 2 = deux fois plus grand, etc.).
-- zoom : Facteur de zoom de la caméra (plus la valeur est grande, plus la caméra "zoome" sur le modèle).
-
-Ces valeurs sont interpolées pour animer la transition du modèle 3D lors du scroll.
-*/
-
 export function Three() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [currentSection, setCurrentSection] = useState(0);
@@ -152,10 +136,10 @@ export function Three() {
     return (
         <main className="overflow-x-hidden">
           {/* Indicateur de section */}
-          <div className="fixed top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded-lg">
+         {/*  <div className="fixed top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded-lg">
             <div>Section: {currentSection + 1}/{sectionStates.length}</div>
             <div>Progression: {Math.round(sectionProgress * 100)}%</div>
-          </div>
+          </div> */}
           
           <div className="fixed inset-0 z-10 pointer-events-none">
             <div className="h-full w-full">
@@ -163,6 +147,7 @@ export function Three() {
                 scrollProgress={scrollProgress} 
                 animations={sectionAnimations}
                 currentSection={currentSection}
+                // On ne transmet pas extraScroll car on veut contrôler les phares uniquement via la section
               />
             </div>
           </div>
@@ -198,10 +183,22 @@ export function Three() {
           >
             {/* Le reste du code avec vos sections */}
             <section className="relative grid place-items-center h-[100vh] z-0">
-              <p className="text-center absolute top-[5%] mx-4 w-fit text-8xl font-bold">
-                Porsche 911
-              </p>
-            </section>
+  <div className="absolute top-[5%] mx-4">
+    <p
+      className="text-8xl font-bold 
+        backdrop-blur-sm bg-white/0 border border-white/0 
+        rounded-xl px-8 py-4
+        shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]
+        hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.6)]
+        transition-all duration-300
+        luminous-text"
+      style={{ position: "relative" }}
+    >
+      <span className="text-glow-porsche animate-glow" style={{ fontFamily: "'Mollani-Regular', sans-serif" }}>Porsche</span>
+      <span className="text-glow-porsche animate-glow" style={{ fontFamily: "'Caliste', 'Caliste-Regular', Caliste, sans-serif" }}> 911</span>
+    </p>
+  </div>
+</section>
             
             <section className="relative flex items-center justify-evenly h-[100vh] z-0">
               <p className="w-[50%] border-0 border-red-700"></p>

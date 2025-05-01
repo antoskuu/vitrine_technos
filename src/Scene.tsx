@@ -1,7 +1,7 @@
 'use client';
 import { Canvas, useFrame } from "@react-three/fiber";
 import Model from "./Model";
-import { Suspense, useState, useRef } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { Environment, Text } from "@react-three/drei";
 
 function CameraDebugOverlay({ position, rotation }: { position: number[], rotation: number[] }) {
@@ -44,6 +44,13 @@ function SceneContent({
   onCameraChange?: (pos: number[], rot: number[]) => void;
 }) {
   const axesRef = useRef<any>(null);
+  const [headlightsOn, setHeadlightsOn] = useState(false);
+
+  // Activer/désactiver les phares en fonction de la section
+  useEffect(() => {
+    // On active les phares uniquement à la dernière section (section 3)
+    setHeadlightsOn(currentSection === 3);
+  }, [currentSection]);
 
   useFrame(({ camera }) => {
     // Ajout : gestion de la position de la caméra via animations
@@ -83,17 +90,14 @@ function SceneContent({
         shadow-mapSize-height={1024}
       />
       <Environment preset="city" />
-      {/* Ajout des axes colorés */}
-      <axesHelper ref={axesRef} args={[2]} />
-      {/* Labels pour les axes */}
-      <Text position={[2.2, 0, 0]} fontSize={0.2} color="red" anchorX="center" anchorY="middle">X</Text>
-      <Text position={[0, 2.2, 0]} fontSize={0.2} color="green" anchorX="center" anchorY="middle">Y</Text>
-      <Text position={[0, 0, 2.2]} fontSize={0.2} color="blue" anchorX="center" anchorY="middle">Z</Text>
+
+      {/* Maintenant le modèle gère ses propres phares */}
       <Model 
         scrollProgress={scrollProgress} 
         animations={animations}
         currentSection={currentSection}
         receiveShadow 
+        headlightsOn={headlightsOn}
       />
     </>
   );
@@ -133,7 +137,7 @@ export default function Scene({
           />
         </Suspense>
       </Canvas>
-      <CameraDebugOverlay position={camPos} rotation={camRot} />
+      {/* <CameraDebugOverlay position={camPos} rotation={camRot} /> */}
     </>
   );
 }

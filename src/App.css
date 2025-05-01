@@ -66,3 +66,58 @@ header {
   position: relative;
   z-index: 20; /* Plus élevé que la scène 3D */
 }
+@font-face {
+  font-family: 'Mollani-Regular';
+  src: url('/assets/Mollani-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Ajoutez ceci dans votre fichier CSS global */
+@font-face {
+  font-family: 'Caliste';
+  src: url('/caliste.woff2') format('woff2'),
+       url('assets/Caliste.ttf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Add to your global CSS file */
+.text-glow-porsche {
+  color: white;
+  text-shadow: 0 0 10px rgba(255,255,255,0.7), 
+               0 0 20px rgba(255,255,255,0.5), 
+               0 0 30px rgba(31,38,135,0.3);
+}
+
+.text-glow-911 {
+  background: linear-gradient(to right, #ffffff, #c0c0c0, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow:
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px #1f268787,
+      0 0 40px #1f26879e;
+  }
+  50% {
+    text-shadow:
+      0 0 20px #fff,
+      0 0 30px #fff,
+      0 0 40px #1f2687,
+      0 0 50px #1f2687;
+  }
+}
+
+
+
+.animate-glow {
+  animation: glow 2s infinite alternate;
+}
