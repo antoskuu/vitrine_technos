@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
 import Scene from "./Scene";
@@ -24,67 +24,71 @@ export function Three() {
     const [currentSection, setCurrentSection] = useState(0);
     const [sectionProgress, setSectionProgress] = useState(0);
     const [sectionAnimations, setSectionAnimations] = useState({
-        rotation: -Math.PI / 3,
+        rotation: Math.PI / 3,
         rotationX: 0,
         rotationY: 0,
         position: { x: 0, y: 0, z: 0 },
-        scale: 1,
-        zoom: 0,
+        scale: 5,
+        zoom: 2,
         cameraPosition: [0, 5, 10] as [number, number, number],
         cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
       });
 
     const sectionStates = [
         {
-            rotation: 0,
-            rotationX: 0,
-            rotationY: 0,
-            position: { x: 0, y: 0, z: 0 },
-            scale: 1.3,
-            zoom: 0,
-            cameraPosition: [0, 5, 10] as [number, number, number],
-            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+          rotation: Math.PI / 3,
+          rotationX: 0,
+          rotationY: 0,
+          position: { x: 0, y: 0, z: -6 },
+          scale: 2.7,
+          zoom: 0,
+          cameraPosition: [0, 5, 10] as [number, number, number],
+          cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
         },
         {
-            rotation: Math.PI / 3,
-            rotationX: Math.PI / 2,
-            rotationY: Math.PI / 4,
-            position: { x: -1, y: 0.5, z: -3 },
-            scale: 0.8,
-            zoom: 0,
-            cameraPosition: [0, 5, 10] as [number, number, number],
-            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
-          },
-        {
-            rotation: -Math.PI / 2,
-            rotationX: -Math.PI / 8,
-            rotationY: Math.PI / 2,
-            position: { x: 3, y: 0.5, z: 0 },
-            scale: 0.7,
-            zoom: 0,
-            cameraPosition: [0, 5, 10] as [number, number, number],
-            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+          rotation: 0,
+          rotationX: 0,
+          rotationY: 0,
+          position: { x: 0, y: 3, z: -3 },
+          scale: 3,
+          zoom: 0,
+          cameraPosition: [0, 5, 10] as [number, number, number],
+          cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
         },
         {
-            rotation: Math.PI,
-            rotationX: -Math.PI / 2,
-            rotationY: Math.PI,
-            position: { x: 0, y: 1, z: 0 },
-            scale: 0.5,
-            zoom: 0,
-            cameraPosition: [0, 5, 10] as [number, number, number],
-            cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+          rotation:-Math.PI/2,
+          rotationX: 0,
+          rotationY: 0,
+          position: { x: 3, y: 0.5, z: 0 },
+          scale: 1.5,
+          zoom: 0,
+          cameraPosition: [0, 5, 10] as [number, number, number],
+          cameraRotation: [-Math.PI/6, 0, 0] as [number, number, number],
+        },
+        {
+          rotation: 0,
+          rotationX: 0,
+          rotationY: 0,
+          position: { x: 0, y: 1, z: 0 },
+          scale: 0.3,
+          zoom: 0,
+          cameraPosition: [0, 10, 1] as [number, number, number],
+          cameraRotation: [-2*Math.PI/4, 0, 0] as [number, number, number],
         },
     ];
+
+    // Référence à l'animation GSAP en cours
+    const animationRef = useRef<gsap.core.Tween | null>(null);
 
     function lerp(a: number, b: number, t: number) {
         return a + (b - a) * t;
     }
+    
     function lerpState(a: any, b: any, t: number) {
         return {
             rotation: lerp(a.rotation, b.rotation, t),
-            rotationX: lerp(a.rotationX, b.rotationX, t),
-            rotationY: lerp(a.rotationY, b.rotationY, t),
+            rotationX: lerp(a.rotationX || 0, b.rotationX || 0, t),
+            rotationY: lerp(a.rotationY || 0, b.rotationY || 0, t),
             position: {
                 x: lerp(a.position.x, b.position.x, t),
                 y: lerp(a.position.y, b.position.y, t),
@@ -116,11 +120,12 @@ export function Three() {
             let foundSection = 0;
             let foundProgress = 0;
             for (let i = 0; i < sections.length; i++) {
-                const rect = sections[i].getBoundingClientRect();
-                if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                const section = sections[i] as HTMLElement;
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollTop >= sectionTop && scrollTop < sectionTop + sectionHeight) {
                     foundSection = i;
-                    const sectionHeight = rect.height;
-                    foundProgress = Math.min(Math.max((window.innerHeight / 2 - rect.top) / sectionHeight, 0), 1);
+                    foundProgress = Math.min(Math.max((scrollTop - sectionTop) / sectionHeight, 0), 1);
                     break;
                 }
             }
@@ -135,15 +140,23 @@ export function Three() {
         };
     }, []);
 
+    // Utiliser GSAP pour des animations plus fluides lors du changement de section
     useEffect(() => {
         const fromState = sectionStates[currentSection];
         const toState = sectionStates[currentSection + 1] || sectionStates[currentSection];
         const interpolated = lerpState(fromState, toState, sectionProgress);
         setSectionAnimations(interpolated);
+        
     }, [currentSection, sectionProgress]);
 
     return (
         <main className="overflow-x-hidden">
+          {/* Indicateur de section */}
+          <div className="fixed top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded-lg">
+            <div>Section: {currentSection + 1}/{sectionStates.length}</div>
+            <div>Progression: {Math.round(sectionProgress * 100)}%</div>
+          </div>
+          
           <div className="fixed inset-0 z-10 pointer-events-none">
             <div className="h-full w-full">
               <Scene 
@@ -153,6 +166,26 @@ export function Three() {
               />
             </div>
           </div>
+          
+          {/* Navigation par points */}
+          <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-2">
+            {sectionStates.map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full ${
+                  currentSection === index ? "bg-white" : "bg-white/30"
+                }`}
+                onClick={() => {
+                  const section = document.querySelectorAll('section')[index];
+                  if (section) {
+                    section.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                aria-label={`Naviguer vers la section ${index + 1}`}
+              />
+            ))}
+          </div>
+          
           <Suspense
             fallback={
               <div className="fixed inset-0 grid place-items-center bg-black text-white">
@@ -163,12 +196,10 @@ export function Three() {
               </div>
             }
           >
+            {/* Le reste du code avec vos sections */}
             <section className="relative grid place-items-center h-[100vh] z-0">
               <p className="text-center absolute top-[5%] mx-4 w-fit text-8xl font-bold">
-                Porsche
-              </p>
-              <p className="text-center absolute  mx-4 w-fit text-8xl font-bold">
-                911
+                Porsche 911
               </p>
             </section>
             
