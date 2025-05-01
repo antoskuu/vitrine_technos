@@ -12,6 +12,7 @@ function SceneContent({
   scrollProgress: number;
   animations: { 
     rotation: number;
+    rotationX: number;
     position: { x: number; y: number; z: number };
     scale: number;
     zoom: number;
@@ -43,12 +44,13 @@ function SceneContent({
 
 export default function Scene({ 
   scrollProgress = 0,
-  animations = { rotation: 0, position: { x: 0, y: 0, z: 0 }, scale: 1, zoom: 0 },
+  animations = { rotation: 0, rotationX: 0, position: { x: 0, y: 0, z: 0 }, scale: 1, zoom: 0 },
   currentSection = 0
 }: { 
   scrollProgress?: number;
   animations?: { 
     rotation: number;
+    rotationX: number;
     position: { x: number; y: number; z: number };
     scale: number;
     zoom: number;
@@ -64,7 +66,6 @@ export default function Scene({
           currentSection={currentSection}
         />
       </Suspense>
-      <OrbitControls enableZoom={false} enablePan={false} />
     </Canvas>
   );
 }

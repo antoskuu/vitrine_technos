@@ -1,99 +1,129 @@
-import { useState, useRef, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Scene from "./Scene";
 
-gsap.registerPlugin(ScrollTrigger);
+/*
+Explications des propriétés d'animation 3D :
+
+- rotation : Angle de rotation du modèle (autour d'un axe, souvent l'axe Y ou Z). Exprimé en radians.
+- rotationX : Angle de rotation du modèle autour de l'axe X. Exprimé en radians.
+- rotationY : Angle de rotation du modèle autour de l'axe Y. Exprimé en radians.
+- position.x, position.y, position.z : Position du modèle dans l'espace 3D (axes X, Y, Z).
+    - x : déplacement gauche/droite
+    - y : déplacement haut/bas
+    - z : déplacement avant/arrière (profondeur)
+- scale : Facteur d'échelle du modèle (1 = taille normale, 2 = deux fois plus grand, etc.).
+- zoom : Facteur de zoom de la caméra (plus la valeur est grande, plus la caméra "zoome" sur le modèle).
+
+Ces valeurs sont interpolées pour animer la transition du modèle 3D lors du scroll.
+*/
 
 export function Three() {
-    const [isLoaded, setIsLoaded] = useState(false);
     const [scrollProgress, setScrollProgress] = useState(0);
-    // Ajout d'un état pour suivre la section actuelle
     const [currentSection, setCurrentSection] = useState(0);
-    // État pour les animations spécifiques à chaque section
+    const [sectionProgress, setSectionProgress] = useState(0);
     const [sectionAnimations, setSectionAnimations] = useState({
-        rotation: 0,
-        position: { x: 0, y: 0, z: 0 },
+        rotation: -Math.PI / 3,
+        rotationX: 0,
+        rotationY: 0,
+        position: { x: 5, y: 5, z: 0 },
         scale: 1,
         zoom: 0,
     });
 
-    // Ajout du scroll global
+    const sectionStates = [
+        {
+            rotation: 0,
+            rotationX: 0,
+            rotationY: 0,
+            position: { x: 2, y: 0, z: -1 },
+            scale: 1.3,
+            zoom: 0,
+        },
+        {
+            rotation: Math.PI / 3,
+            rotationX: Math.PI / 2,
+            rotationY: Math.PI / 4,
+            position: { x: -1, y: 0.5, z: -3 },
+            scale: 0.8,
+            zoom: 0,
+        },
+        {
+            rotation: -Math.PI / 2,
+            rotationX: -Math.PI / 8,
+            rotationY: Math.PI / 2,
+            position: { x: 3, y: 0.5, z: 0 },
+            scale: 0.7,
+            zoom: 0,
+        },
+        {
+            rotation: Math.PI,
+            rotationX: -Math.PI / 2,
+            rotationY: Math.PI,
+            position: { x: 0, y: 1, z: 0 },
+            scale: 0.5,
+            zoom: 0,
+        },
+    ];
+
+    function lerp(a: number, b: number, t: number) {
+        return a + (b - a) * t;
+    }
+    function lerpState(a: any, b: any, t: number) {
+        return {
+            rotation: lerp(a.rotation, b.rotation, t),
+            rotationX: lerp(a.rotationX, b.rotationX, t),
+            rotationY: lerp(a.rotationY, b.rotationY, t),
+            position: {
+                x: lerp(a.position.x, b.position.x, t),
+                y: lerp(a.position.y, b.position.y, t),
+                z: lerp(a.position.z, b.position.z, t),
+            },
+            scale: lerp(a.scale, b.scale, t),
+            zoom: lerp(a.zoom, b.zoom, t),
+        };
+    }
+
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop = window.scrollY;
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = docHeight > 0 ? scrollTop / docHeight : 0;
             setScrollProgress(progress);
+
+            const sections = document.querySelectorAll('section');
+            let foundSection = 0;
+            let foundProgress = 0;
+            for (let i = 0; i < sections.length; i++) {
+                const rect = sections[i].getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                    foundSection = i;
+                    const sectionHeight = rect.height;
+                    foundProgress = Math.min(Math.max((window.innerHeight / 2 - rect.top) / sectionHeight, 0), 1);
+                    break;
+                }
+            }
+            setCurrentSection(foundSection);
+            setSectionProgress(foundProgress);
         };
         window.addEventListener("scroll", handleScroll);
         handleScroll();
-        
-        // Création des triggers pour chaque section
-        const sections = document.querySelectorAll('section');
-        sections.forEach((section, index) => {
-            ScrollTrigger.create({
-                trigger: section,
-                start: "top center",
-                end: "bottom center",
-                onEnter: () => setCurrentSection(index),
-                onEnterBack: () => setCurrentSection(index),
-            });
-        });
-        
+
         return () => {
             window.removeEventListener("scroll", handleScroll);
-            // Clean up any GSAP animations to prevent memory leaks
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-            gsap.globalTimeline.clear();
         };
     }, []);
-    
-    // Effet pour gérer les animations spécifiques à chaque section
+
     useEffect(() => {
-        // Définir des animations différentes selon la section active
-        switch(currentSection) {
-            case 0: // Première section
-                setSectionAnimations({
-                    rotation: scrollProgress * Math.PI * 2,
-                    position: { x: 0, y: 0, z: 0 },
-                    scale: 1,
-                    zoom: 0
-                });
-                break;
-            case 1: // Deuxième section
-                setSectionAnimations({
-                    rotation: Math.PI / 2 + (scrollProgress * Math.PI / 2),
-                    position: { x: scrollProgress * 2, y: 0, z: 0 },
-                    scale: 1 + scrollProgress * 0.2,
-                    zoom: 0
-                });
-                break;
-            case 2: // Troisième section
-                setSectionAnimations({
-                    rotation: Math.PI + (scrollProgress * Math.PI / 4),
-                    position: { x: 0, y: scrollProgress * 1.5, z: 0 },
-                    scale: 1.2 - scrollProgress * 0.1,
-                    zoom: scrollProgress * 2
-                });
-                break;
-            case 3: // Quatrième section
-                setSectionAnimations({
-                    rotation: Math.PI * 1.5 + (scrollProgress * Math.PI / 2),
-                    position: { x: -scrollProgress * 2, y: 0, z: scrollProgress * 3 },
-                    scale: 1 + scrollProgress * 0.5,
-                    zoom: scrollProgress * 4
-                });
-                break;
-            default:
-                break;
-        }
-    }, [currentSection, scrollProgress]);
-    
+        const fromState = sectionStates[currentSection];
+        const toState = sectionStates[currentSection + 1] || sectionStates[currentSection];
+        const interpolated = lerpState(fromState, toState, sectionProgress);
+        setSectionAnimations(interpolated);
+    }, [currentSection, sectionProgress]);
+
     return (
         <main className="overflow-x-hidden">
-          {/* Scène 3D en fixed */}
           <div className="fixed inset-0 z-10 pointer-events-none">
             <div className="h-full w-full">
               <Scene 
@@ -113,7 +143,6 @@ export function Three() {
               </div>
             }
           >
-            {/* Sections de contenu qui scrollent sous la scène */}
             <section className="relative grid place-items-center h-[100vh] z-0">
               <p className="text-center absolute top-[5%] mx-4 w-fit text-8xl font-bold">
                 Porsche
