@@ -26,3 +26,12 @@
     width: 100%;
     max-width: 1200px;
 }
+
+/* Style le dropdown du menu */
+[data-slot="navigation-menu-content"] {
+    min-width: 250px; /* largeur minimale, ajuste selon besoin */
+    width: max-content; /* largeur selon le contenu */
+    border: none;
+    
+    padding: 0.5rem 0;
+}
