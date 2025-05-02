@@ -196,8 +196,7 @@ header {
 /* Ajoutez ceci dans votre fichier CSS global */
 @font-face {
   font-family: 'Caliste';
-  src: url('/caliste.woff2') format('woff2'),
-       url('assets/Caliste.ttf') format('woff');
+  src: url('assets/Caliste.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

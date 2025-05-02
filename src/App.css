@@ -75,7 +75,7 @@ header {
 /* Ajoutez ceci dans votre fichier CSS global */
 @font-face {
   font-family: 'Caliste';
-  src: url('assets/Caliste.ttf') format('ttf');
+  src: url('assets/Caliste.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
