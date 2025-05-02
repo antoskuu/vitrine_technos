@@ -1,18 +1,14 @@
 import { useGLTF } from "@react-three/drei"
-import { useRef, useState, useEffect } from "react"
+import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import Headlights from "./Headlights"
 
 useGLTF.preload("assets/porsche.glb")
 
 export default function Model({ 
-    scrollProgress = 0, 
     animations = { rotation: 0, rotationX: 0, position: { x: 0, y: 0, z: 0 }, scale: 1, zoom: 0 },
-    currentSection = 0,
-    receiveShadow = false,
     headlightsOn = true
 }: { 
-    scrollProgress?: number, 
     animations?: { 
         rotation: number;
         rotationX: number;
@@ -20,12 +16,10 @@ export default function Model({
         scale: number;
         zoom: number;
     },
-    currentSection?: number,
-    receiveShadow?: boolean,
     headlightsOn?: boolean
 }) {
     const group = useRef<any>(null)
-    const { nodes, materials, scene } = useGLTF("assets/porsche.glb")
+    const { scene } = useGLTF("assets/porsche.glb")
     
     // Configuration précise des phares pour la Porsche
     const headlightConfig = {
@@ -81,11 +75,6 @@ export default function Model({
                 volumetric={false}
                 volumetricWidth={0.5}
                 glow={true}
-                // Positions personnalisées pour correspondre exactement à l'emplacement des phares
-                customLeftPosition={headlightConfig.leftPosition as [number, number, number]}
-                customRightPosition={headlightConfig.rightPosition as [number, number, number]}
-                // Direction des faisceaux (légèrement vers l'avant et vers le bas)
-                beamDirection={[0, -0.15, 10]}
             />
         </group>
     )

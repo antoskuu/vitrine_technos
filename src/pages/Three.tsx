@@ -1,6 +1,5 @@
-import { useState, useEffect, Suspense, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import gsap from "gsap";
+import { useState, useEffect, Suspense } from "react";
+
 import Scene from "../Scene";
 
 export function Three() {
@@ -60,9 +59,6 @@ export function Three() {
           cameraRotation: [-2*Math.PI/4, 0, 0] as [number, number, number],
         },
     ];
-
-    // Référence à l'animation GSAP en cours
-    const animationRef = useRef<gsap.core.Tween | null>(null);
 
     function lerp(a: number, b: number, t: number) {
         return a + (b - a) * t;

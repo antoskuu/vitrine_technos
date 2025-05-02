@@ -24,6 +24,7 @@ function App() {
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     ctx.lineCap = "round";
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;

@@ -1,31 +1,10 @@
 'use client';
 import { Canvas, useFrame } from "@react-three/fiber";
 import Model from "./Model";
-import { Suspense, useState, useRef, useEffect } from "react";
-import { Environment, Text } from "@react-three/drei";
-
-function CameraDebugOverlay({ position, rotation }: { position: number[], rotation: number[] }) {
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 10,
-      left: 10,
-      background: 'rgba(0,0,0,0.7)',
-      color: '#fff',
-      padding: '8px 12px',
-      borderRadius: 6,
-      fontSize: 12,
-      zIndex: 10000,
-      pointerEvents: 'none'
-    }}>
-      <div><b>Camera Position:</b> {position.map(n => n.toFixed(2)).join(', ')}</div>
-      <div><b>Camera Rotation:</b> {rotation.map(n => n.toFixed(2)).join(', ')}</div>
-    </div>
-  );
-}
+import { Suspense, useState, useEffect } from "react";
+import { Environment } from "@react-three/drei";
 
 function SceneContent({ 
-  scrollProgress, 
   animations, 
   currentSection,
   onCameraChange
@@ -43,7 +22,6 @@ function SceneContent({
   currentSection: number;
   onCameraChange?: (pos: number[], rot: number[]) => void;
 }) {
-  const axesRef = useRef<any>(null);
   const [headlightsOn, setHeadlightsOn] = useState(false);
 
   // Activer/désactiver les phares en fonction de la section
@@ -93,10 +71,7 @@ function SceneContent({
 
       {/* Maintenant le modèle gère ses propres phares */}
       <Model 
-        scrollProgress={scrollProgress} 
         animations={animations}
-        currentSection={currentSection}
-        receiveShadow 
         headlightsOn={headlightsOn}
       />
     </>
@@ -120,8 +95,6 @@ export default function Scene({
   };
   currentSection?: number;
 }) {
-  const [camPos, setCamPos] = useState([0, 2, 5]);
-  const [camRot, setCamRot] = useState([0, 0, 0]);
   return (
     <>
       <Canvas shadows camera={{ position: [0, 2, 5], fov: 25 }}>
@@ -130,14 +103,9 @@ export default function Scene({
             scrollProgress={scrollProgress} 
             animations={animations}
             currentSection={currentSection}
-            onCameraChange={(pos, rot) => {
-              setCamPos(pos);
-              setCamRot(rot);
-            }}
           />
         </Suspense>
       </Canvas>
-      {/* <CameraDebugOverlay position={camPos} rotation={camRot} /> */}
     </>
   );
 }

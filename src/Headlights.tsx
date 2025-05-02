@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { useFrame } from "@react-three/fiber"
-import { SpotLight, useGLTF, MeshDistortMaterial, Trail } from "@react-three/drei"
+import { SpotLight } from "@react-three/drei"
 import * as THREE from "three"
 
 interface HeadlightsProps {
@@ -110,13 +110,13 @@ export default function Headlights({
       if (rightLightRef.current) rightLightRef.current.intensity = currentIntensity;
       
       // S'assurer que les faisceaux sont complètement invisibles
-      if (leftBeamRef.current && leftBeamRef.current.material) {
-        leftBeamRef.current.material.opacity = 0;
+      if (leftBeamRef.current && 'material' in leftBeamRef.current && leftBeamRef.current.material && 'opacity' in leftBeamRef.current.material) {
+        (leftBeamRef.current.material as THREE.Material & { opacity?: number }).opacity = 0;
         leftBeamRef.current.visible = false;
       }
       
-      if (rightBeamRef.current && rightBeamRef.current.material) {
-        rightBeamRef.current.material.opacity = 0;
+      if (rightBeamRef.current && 'material' in rightBeamRef.current && rightBeamRef.current.material && 'opacity' in rightBeamRef.current.material) {
+        (rightBeamRef.current.material as THREE.Material & { opacity?: number }).opacity = 0;
         rightBeamRef.current.visible = false;
       }
       
@@ -146,12 +146,12 @@ export default function Headlights({
     
     // Animation des faisceaux volumétriques
     if (volumetric) {
-      if (leftBeamRef.current) {
-        leftBeamRef.current.material.opacity = (0.4 + primaryFlicker) * (isOn ? 1 : 0)
+      if (leftBeamRef.current && leftBeamRef.current.material && 'opacity' in leftBeamRef.current.material) {
+        (leftBeamRef.current.material as THREE.Material & { opacity?: number }).opacity = (0.4 + primaryFlicker) * (isOn ? 1 : 0)
       }
       
-      if (rightBeamRef.current) {
-        rightBeamRef.current.material.opacity = (0.4 + primaryFlicker) * (isOn ? 1 : 0)
+      if (rightBeamRef.current && rightBeamRef.current.material && 'opacity' in rightBeamRef.current.material) {
+        (rightBeamRef.current.material as THREE.Material & { opacity?: number }).opacity = (0.4 + primaryFlicker) * (isOn ? 1 : 0)
       }
     }
   })
@@ -166,10 +166,9 @@ export default function Headlights({
     ]
     
     return (
-      <mesh position={midPosition} ref={position === leftPosition ? leftBeamRef : rightBeamRef}>
+      <mesh position={midPosition} ref={position === leftPosition ? leftBeamRef : rightBeamRef} rotation={[Math.PI/2, 0, 0]}>
         <cylinderGeometry 
           args={[width * scale, width * 1.8 * scale, 10, 16, 4, true]} 
-          rotation={[Math.PI/2, 0, 0]}
         />
         <meshBasicMaterial
           color={color}
