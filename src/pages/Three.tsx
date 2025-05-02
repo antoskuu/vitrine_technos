@@ -186,15 +186,13 @@ export function Three() {
               <p className="w-[50%] border-0 border-red-700"></p>
     
               <p className="w-[50%] text-center px-4 text-4xl font-semibold">
-                Effortlessly scroll, zoom, and navigate with the re-engineered
-                Digital Crown, now more precise than ever.
+                La Porsche 911 incarne l’équilibre parfait entre élégance intemporelle et performances de pointe. 
               </p>
             </section>
     
             <section className="relative flex items-center justify-evenly h-[100vh] z-0">
               <p className="order-1 w-[50%] text-center px-4 text-4xl font-semibold">
-                Built for adventure, the rugged straps are as tough as you are,
-                ready for any challenge.
+                Son moteur six cylindres à plat délivre une puissance saisissante, offrant des sensations de conduite uniques et une réactivité instantanée à chaque accélération.
               </p>
               <p className="w-[50%] order-2"></p>
             </section>
@@ -203,8 +201,7 @@ export function Three() {
               <p className="w-[50%] border-0 border-red-700"></p>
     
               <p className="w-[50%] text-center px-4 text-4xl font-semibold">
-                The brightest display ever on an Apple Watch, so you can see it
-                clearly even under the harshest sun.
+                Les phares LED de la 911 illuminent la route avec une puissance et une précision remarquables, garantissant une visibilité optimale même dans les conditions les plus exigeantes.
               </p>
             </section>
           </Suspense>

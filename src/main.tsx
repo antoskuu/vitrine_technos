@@ -14,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<RootLayout />}>
           <Route index element={<WebSocket />} />
           <Route path="porsche" element={<Three />} />
+          <Route path="websocket" element={<WebSocket />} />
           {/* Ajoutez d'autres routes selon vos besoins */}
         </Route>
       </Routes>
