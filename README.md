@@ -1,13 +1,5 @@
-# 📱 Nom de l'application
-
-Courte description de l'application en une ou deux phrases.  
-(Ex : Application React moderne pour gérer vos listes de tâches efficacement.)
-
-## 🚀 Fonctionnalités
-
-- ✨ Fonctionnalité 1  
-- 📝 Fonctionnalité 2  
-- 🌐 Fonctionnalité 3  
+# 📱 Site vitrine de test de certaines technologies web 
+Visitable ici : 
 
 ## 🛠️ Installation
 
