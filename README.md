@@ -1,16 +1,21 @@
-# 📱 Site vitrine de test de certaines technologies web 
+# 📱 Site vitrine de test de certaines technologies web (three.js, socket.io)
 Visitable ici : 
 
 ## 🛠️ Installation
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/utilisateur/nom-du-repo.git
+git clone https://github.com/antoskuu/vitrine_technos.git
 
 # Aller dans le dossier
-cd nom-du-repo
+cd vitrine_technos
 
 # Installer les dépendances
 npm install
 # ou
 yarn install
+
+# Lancer le frontend
+npm run dev
+# ou
+yarn dev
