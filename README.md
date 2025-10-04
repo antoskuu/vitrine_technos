@@ -19,3 +19,7 @@ yarn install
 npm run dev
 # ou
 yarn dev
+
+```
+## Stack
+- react, three.js, socket.io
